@@ -10,7 +10,7 @@ const generateEmailPasscode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString()
 }
 
-router.post('/validateEmail', async (req, res) => {
+router.post('/validateMembership', async (req, res) => {
   const emailFilter = `email: ${req.body.email}`
   console.log('got email: ', emailFilter)
   ghostAdminApi.members.browse({filter: emailFilter})
@@ -71,6 +71,19 @@ router.post('/verifyEmailPasscode', async (req, res) => {
     return res
         .status(400)
         .json({error: 'Couldn\'t get users passcode'})
+  }
+})
+
+router.post('/createMember', async (req, res) => {
+  const {name, email} = req.body
+  try {
+    await ghostAdminApi.members.add({name: name, email: email})
+    return res.sendStatus(200)
+  } catch (error) {
+    console.log(error)
+    return res
+        .status(400)
+        .json({error: 'Couldn\'t create member or member is already created'})
   }
 })
 
