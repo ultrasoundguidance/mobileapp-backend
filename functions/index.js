@@ -6,6 +6,7 @@ import postRoutes from './routes/PostRoutes.js'
 import videoRoutes from './routes/VideoRoutes.js'
 import StripeWebhooks from './routes/StripeWebhooks.js'
 import RCWebhooks from './routes/RCWebhooks.js'
+import GhostWebhooks from './routes/GhostWebhooks.js'
 
 initializeApp()
 
@@ -17,6 +18,8 @@ app.use('/post', postRoutes)
 app.use('/video', videoRoutes)
 app.use('/stripe', StripeWebhooks)
 app.use('/rc', RCWebhooks)
+app.use('/ghostWebhook', GhostWebhooks)
+
 app.get('/', (req, res) => res.status(200).send('Function is up and running 👍'))
 
 export const ug = onRequest(app)

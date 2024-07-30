@@ -17,7 +17,6 @@ router.post('/validateMembership', async (req, res) => {
   ghostAdminApi.members.browse({filter: `email: '${req.body.email}'`})
       .then((response) => {
         res.send(response)
-        console.log(response)
       })
       .catch((error) => {
         console.log(error)
@@ -35,7 +34,20 @@ router.post('/sendEmailPasscode', async (req, res) => {
   if (email !== 'dev@testing.com') {
     try {
       await addPasscode(email, emailPasscode, expirationTime)
-      await sendEmail(email, username, emailPasscode)
+      const message = `
+        <p>Hi ${username},</p>
+
+        <p>Ultrasound Guidance wants to make sure it's really you.
+        Please enter the verification code when prompted.</p>
+
+        <p style="font-size: 30px;">${emailPasscode}</p>
+
+        <p><strong>Your password will expire in 10 minutes.</strong></p>
+
+        <p>If you didn't request the code, please ignore this email.</p>
+        `
+      const subject = '🔐 Email Verification'
+      await sendEmail(email, subject, message)
     } catch (error) {
       console.log(error)
       return res
@@ -79,7 +91,13 @@ router.post('/verifyEmailPasscode', async (req, res) => {
 router.post('/createMember', async (req, res) => {
   const {name, email} = req.body
   try {
-    await ghostAdminApi.members.add({name: name, email: email})
+    await ghostAdminApi.members.add(
+        {
+          name: name,
+          email: email,
+          labels: [{'name': 'Mobile app signup', 'slug': 'mobile-app-signup'}],
+        },
+    )
     return res.sendStatus(200)
   } catch (error) {
     console.log(error)

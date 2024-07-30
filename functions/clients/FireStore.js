@@ -3,7 +3,6 @@ import {getFirestore} from 'firebase/firestore'
 import {doc, setDoc, getDoc} from 'firebase/firestore'
 import 'dotenv/config'
 
-// TODO: Replace the following with your app's Firebase project configuration
 export const firebaseConfig = {
   apiKey: process.env.FB_KEY,
   authDomain: 'ultrasound-guidance.firebaseapp.com',
@@ -43,32 +42,21 @@ export async function addPasscode(email, passcode, expirationTime) {
 /**
  * Sends email to email address with the 6 digit passcode.
  * @param {string} email Users email address.
- * @param {string} username Users first name.
- * @param {string} passcode The 6 digit passcode.
+ * @param {string} subject The subject for the email.
+ * @param {string} message The message for the body of the email (html format)
  */
-export async function sendEmail(email, username, passcode) {
-  const message = `
-  Hi ${username},
-
-  Ultrasound Guidance wants to make sure it's really you.
-  Please enter the verification code when prompted.
-
-  ${passcode}
-
-  Your password will expire in 10 minutes.
-
-  If you didn't request the code, please ignore this email.
-  `
-
+export async function sendEmail(email, subject, message) {
   try {
     await setDoc(doc(db, 'mail', email), {
+      from: 'ultrasoundguidance@ghost.io',
+      replyTo: 'team@ultrasoundguidance.com',
       to: [email],
       message: {
-        subject: 'Email Verification',
-        text: message,
+        subject: subject,
+        html: message,
       },
     })
-    console.log('Added the passcode')
+    console.log(`Sent the '${subject}' email to, ${email}`)
     return 200
   } catch (error) {
     console.log('Unable to add passcode: ', error)

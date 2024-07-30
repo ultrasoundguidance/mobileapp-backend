@@ -6,7 +6,6 @@ const router = new Router()
 router.post('/getPost', async (req, res) => {
   ghostAdminApi.posts.read({id: '61bdf7782c1fc8004884fdcb'})
       .then((response) => {
-        console.log(response)
         res.send(response)
       })
       .catch((error) => {
@@ -22,7 +21,6 @@ router.post('/getPublishedPosts', async (req, res) => {
       {filter: `${filterTag}+${filterPublished}`, limit: 'all'},
   )
       .then((response) => {
-        console.log(response)
         res.send(response)
       })
       .catch((error) => {
