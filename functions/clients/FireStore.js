@@ -71,7 +71,7 @@ export async function sendEmail(email, subject, message) {
  */
 export async function getUsers(email) {
   try {
-    const docRef = doc(db, 'users', email)
+    const docRef = doc(db, 'users', email.toLowerCase())
     const docSnap = await getDoc(docRef)
 
     if (docSnap.exists()) {
