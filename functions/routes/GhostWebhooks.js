@@ -16,7 +16,7 @@ router.post('/sendWelcomeEmailToNewSubscriber', async (req, res) => {
 
     <p>If you <strong>need support or have questions</strong>, please email team@ultrasoundguidance.com.</p>
     <p>Don't hesitate to send us an email with any questions, comments, or concerns. We're here to help!
-    If you like what you see, send us a 1-3 sentence review. We always love to hear your thoughts!</p>
+    If you like what you see, give us a 1-3 sentence review on the app store or send send the review our way. We always love to hear your thoughts!</p>
     <hr>
     <p>Access the <strong>Diagnostic and Procedure Atlases</strong> by visiting the website at www.ultrasoundguidance.com/videos/
     and take all content with you on the mobile app.</p>
@@ -48,7 +48,7 @@ router.post('/sendWelcomeEmailToFreeMobileMember', async (req, res) => {
     <p>Hi ${member.current.name},</p>
     <p>Thank you for registering with <strong>Ultrasound Guidance</strong>! We're so glad you're here!</p>
 
-    <p>Check out the <a href="https://www.ultrasoundguidance.com/plans/">MSK Complete Package</a> and see how you can improve your Ultrasound expertise!</p>
+    <p>The free tier of Ultrasound Guidance gives you access to a few introductory videos so you can get a feel for what we're all about. We hope you like what you see! When you're ready to level up your ultrasound skills, check out the <a href="https://www.ultrasoundguidance.com/plans/">MSK Complete Package</a> and see how you can improve your Ultrasound expertise!</p>
     
     <p>Please check out our <a href="https://www.ultrasoundguidance.com/contact/">frequently asked questions page</a> and reach out to team@ultrasoundguidance.com for any additional questions.</p>
     
