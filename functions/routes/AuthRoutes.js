@@ -98,7 +98,11 @@ router.post('/createMember', async (req, res) => {
           labels: [{'name': 'Mobile app signup', 'slug': 'mobile-app-signup'}],
         },
     )
-    return res.sendStatus(200)
+
+    // Wait for welcome email to be sent before sending passcode email
+    setTimeout(() => {
+      return res.sendStatus(200)
+    }, 5000)
   } catch (error) {
     console.log(error)
     return res

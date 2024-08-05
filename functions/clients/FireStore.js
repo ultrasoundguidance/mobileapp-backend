@@ -59,7 +59,7 @@ export async function sendEmail(email, subject, message) {
     console.log(`Sent the '${subject}' email to, ${email}`)
     return 200
   } catch (error) {
-    console.log('Unable to add passcode: ', error)
+    console.log('Unable to send email: ', error)
     return 500
   }
 }
