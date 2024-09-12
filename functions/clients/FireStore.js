@@ -1,6 +1,6 @@
 import {initializeApp} from 'firebase/app'
 import {getFirestore} from 'firebase/firestore'
-import {doc, setDoc, getDoc} from 'firebase/firestore'
+import {doc, setDoc, getDoc, arrayUnion, arrayRemove} from 'firebase/firestore'
 import 'dotenv/config'
 
 export const firebaseConfig = {
@@ -36,6 +36,46 @@ export async function addPasscode(email, passcode, expirationTime) {
   } catch (error) {
     console.log('Unable to add passcode: ', error)
     return 500
+  }
+}
+
+/**
+ * Add mobile device ID to user info.
+ * @param {string} email Users email address.
+ * @param {string} deviceId Users mobile device ID.
+ */
+export async function addMobileDeviceId(email, deviceId) {
+  try {
+    await setDoc(doc(db, 'users', email), {
+      mobileLogin: {
+        deviceIds: arrayUnion( deviceId ),
+      },
+    }, {merge: true})
+    console.log('Added the device ID: ', deviceId)
+    return 200
+  } catch (error) {
+    console.log('Unable to add device ID: ', error)
+    throw error
+  }
+}
+
+/**
+ * Removes the specified device ID from user info.
+ * @param {string} email Users email address.
+ * @param {string} deviceId Users mobile device ID.
+ */
+export async function deleteMobileDeviceId(email, deviceId) {
+  try {
+    await setDoc(doc(db, 'users', email), {
+      mobileLogin: {
+        deviceIds: arrayRemove(deviceId),
+      },
+    }, {merge: true})
+    console.log('Removed the device ID')
+    return 200
+  } catch (error) {
+    console.log('Unable to remove device ID: ', error)
+    throw error
   }
 }
 

@@ -1,6 +1,12 @@
 import {Router} from 'express'
 import {GhostURL, ghostAdminApi} from '../clients/Ghost.js'
-import {addPasscode, getUsers, sendEmail} from '../clients/FireStore.js'
+import {
+  addPasscode,
+  getUsers,
+  sendEmail,
+  addMobileDeviceId,
+  deleteMobileDeviceId,
+} from '../clients/FireStore.js'
 import FormData from 'form-data'
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
@@ -22,6 +28,29 @@ router.post('/validateMembership', async (req, res) => {
         console.log(error)
         res.status(400).json({error: 'Cannot find user'})
       })
+})
+
+router.post('/mobileLogin', async (req, res) => {
+  const {email, deviceId} = req.body
+  // Users are only allowed 2 signed in devices at a time
+  await addMobileDeviceId(email, deviceId)
+  const user = await getUsers(email)
+  if (user.mobileLogin.deviceIds.length > 2) {
+    await deleteMobileDeviceId(email, user.mobileLogin.deviceIds[0])
+  }
+
+  res.sendStatus(200)
+})
+
+router.post('/validateDeviceId', async (req, res) => {
+  const {email, deviceId} = req.body
+  // Check if the device id given is included in the device id list for the user
+  const user = await getUsers(email)
+  if (user.mobileLogin.deviceIds.includes(deviceId)) {
+    res.status(200).send('Device ID found')
+  } else {
+    res.status(404).send('Device ID not found')
+  }
 })
 
 router.post('/sendEmailPasscode', async (req, res) => {
