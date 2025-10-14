@@ -2,6 +2,7 @@ import {onRequest} from 'firebase-functions/v2/https'
 import {initializeApp} from 'firebase-admin/app'
 import express from 'express'
 import authRoutes from './routes/AuthRoutes.js'
+import logRoutes from './routes/LogRoutes.js'
 import postRoutes from './routes/PostRoutes.js'
 import videoRoutes from './routes/VideoRoutes.js'
 import StripeWebhooks from './routes/StripeWebhooks.js'
@@ -19,6 +20,7 @@ app.use('/video', videoRoutes)
 app.use('/stripe', StripeWebhooks)
 app.use('/rc', RCWebhooks)
 app.use('/ghostWebhook', GhostWebhooks)
+app.use('/log', logRoutes)
 
 app.get('/', (req, res) => res.status(200).send('Function is up and running 👍'))
 
