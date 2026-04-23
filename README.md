@@ -1,6 +1,7 @@
 ## Setup
 The backend for the Ultrasound Guidance mobile app uses Firebase Functions. You can read the get started guide [here](https://firebase.google.com/docs/functions/get-started?gen=2nd)
 - Make sure you have Node.js, and the Firebase CLI installed
+- If you use `nvm`, run `nvm use` from the repository root to change to the node version used by the app.
 - Setup a '.env' file in the functions directory for the Firebase and Ghost API keys. The file should have the following keys:
 ```
 GHOST_KEY = <Ghost Admin API key> // Obtained from integrations section of Ghost dashboard
