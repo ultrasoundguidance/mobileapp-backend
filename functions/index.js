@@ -5,9 +5,6 @@ import authRoutes from './routes/AuthRoutes.js'
 import logRoutes from './routes/LogRoutes.js'
 import postRoutes from './routes/PostRoutes.js'
 import videoRoutes from './routes/VideoRoutes.js'
-import StripeWebhooks from './routes/StripeWebhooks.js'
-import RCWebhooks from './routes/RCWebhooks.js'
-import GhostWebhooks from './routes/GhostWebhooks.js'
 
 initializeApp()
 
@@ -17,9 +14,6 @@ app.use(express.json())
 app.use('/auth', authRoutes)
 app.use('/post', postRoutes)
 app.use('/video', videoRoutes)
-app.use('/stripe', StripeWebhooks)
-app.use('/rc', RCWebhooks)
-app.use('/ghostWebhook', GhostWebhooks)
 app.use('/log', logRoutes)
 
 app.get('/', (req, res) => res.status(200).send('Function is up and running 👍'))

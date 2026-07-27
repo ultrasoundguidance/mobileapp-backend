@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {GhostURL, ghostAdminApi} from '../clients/Ghost.js'
+import {ghostAdminApi} from '../clients/Ghost.js'
 import {
   addPasscode,
   getUsers,
@@ -7,9 +7,6 @@ import {
   addMobileDeviceId,
   deleteMobileDeviceId,
 } from '../clients/FireStore.js'
-import FormData from 'form-data'
-import axios from 'axios'
-import jwt from 'jsonwebtoken'
 
 const EMAIL_TOKEN_EXPIRATION_MINUTES = 10
 
@@ -117,29 +114,6 @@ router.post('/verifyEmailPasscode', async (req, res) => {
   }
 })
 
-router.post('/createMember', async (req, res) => {
-  const {name, email} = req.body
-  try {
-    await ghostAdminApi.members.add(
-        {
-          name: name,
-          email: email,
-          labels: [{'name': 'Mobile app signup', 'slug': 'mobile-app-signup'}],
-        },
-    )
-
-    // Wait for welcome email to be sent before sending passcode email
-    setTimeout(() => {
-      return res.sendStatus(200)
-    }, 5000)
-  } catch (error) {
-    console.log(error)
-    return res
-        .sendStatus(400)
-        .json({error: 'Couldn\'t create member or member is already created'})
-  }
-})
-
 router.post('/deleteMember', async (req, res) => {
   const {id} = req.body
   try {
@@ -150,51 +124,6 @@ router.post('/deleteMember', async (req, res) => {
     return res
         .sendStatus(400)
         .json({error: 'Couldn\'t delete member'})
-  }
-})
-
-router.post('/addSubscriptionToGhost', async (req, res) => {
-  const {userEmail, userName, userId} = req.body
-  console.log(
-      'Adding Subscription to Ghost for the email, name and user id: ',
-      userEmail, userName, userId,
-  )
-
-  // Do not modify. All the information is needed
-  // eslint-disable-next-line max-len
-  const fileContents = `id,email,name,note,subscribed_to_emails,complimentary_plan,stripe_customer_id,labels
-,${userEmail},${userName},added by Stripe,,FALSE,${userId},stripe integration`
-
-  const form = new FormData()
-  form.append('mapping[email]', 'email')
-  form.append('mapping[name]', 'name')
-  form.append('mapping[stripe_customer_id]', 'stripe_customer_id')
-  form.append('membersfile', Buffer.from(fileContents), {filename: 'data.csv'})
-
-  const key = process.env.GHOST_KEY
-  const [id, secret] = key.split(':')
-  const token = jwt.sign({}, Buffer.from(secret, 'hex'), {
-    keyid: id,
-    algorithm: 'HS256',
-    expiresIn: '5m',
-    audience: `/admin/`,
-  })
-
-  const headers = Object.assign({
-    Authorization: `Ghost ${token}`,
-  }, form.getHeaders())
-  try {
-    await axios.post(
-        `${GhostURL}/ghost/api/admin/members/upload/`,
-        form, {headers},
-    )
-    console.log('Associated Stripe subscription to Ghost member')
-    res.sendStatus(200)
-  } catch (error) {
-    console.error(
-        'Unable to associate Stripe subscription to Ghost member', error,
-    )
-    res.sendStatus(400)
   }
 })
 
